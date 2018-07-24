@@ -44,7 +44,7 @@ public class FutureTaskComparetor extends BaseComparator {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					source.requestPrice(from, to, new OnPriceRefreshedListenner() {
+					source.requestPrice(new OnPriceRefreshedListenner() {
 						
 						@Override
 						public void onPriceRefreshed(String sourceName, boolean succeed, CoinID from, CoinID to, double rate,
