@@ -1,12 +1,9 @@
 package com.bricker.test;
 
-import java.io.IOException;
-
-
 import com.bricker.framework.CoinID;
 import com.bricker.framework.OnPriceRefreshedListenner;
-import com.bricker.framework.OnPriceResultListenner;
 import com.bricker.framework.Source;
+import com.bricker.util.TimeUtils;
 import com.bricker.util.log.Log;
 import com.bricker.util.log.LogCategory;
 import com.bricker.util.log.LogLevel;
@@ -23,7 +20,7 @@ public class Tester {
 			@Override
 			public void onPriceRefreshed(String sourceName, boolean succeed, CoinID from, CoinID to, double rate,
 					long timeStamp) {
-				System.out.println("sourceName = " + sourceName + " succeed = " + succeed + " " + from.name() + "_" + to.name() + " time = " + timeStamp +  " rate = " + rate);
+				System.out.println("sourceName = " + sourceName  + "\tsucceed = " + succeed + " " + from.name() + "_" + to.name() + " time = " + TimeUtils.DateToString(timeStamp) +  " rate = " + rate);
 				// TODO Auto-generated method stub
 				
 			}
@@ -35,7 +32,7 @@ public class Tester {
 			@Override
 			public void onPriceRefreshed(String sourceName, boolean succeed, CoinID from, CoinID to, double rate,
 					long timeStamp) {
-				System.out.println("sourceName = " + sourceName + " succeed = " + succeed + " " + from.name() + "_" + to.name() + " time = " + timeStamp +  " rate = " + rate);
+				System.out.println("sourceName = " + sourceName  + "\t\tsucceed = " + succeed + " " + from.name() + "_" + to.name() + " time = " + TimeUtils.DateToString(timeStamp) +  " rate = " + rate);
 				// TODO Auto-generated method stub
 				
 			}
