@@ -2,7 +2,7 @@ package com.gate.reset;
 
 import com.bricker.framework.PlatefromSource;
 import com.bricker.framework.CoinID;
-import com.bricker.framework.OnPriceRefreshedListenner;
+import com.bricker.framework.OnNewPriceFromSource;
 import com.bricker.framework.PlateformApi;
 import com.bricker.framework.SourceID;
 

@@ -27,7 +27,7 @@ public abstract class PlatefromSource extends DigtalCashRateSource {
 	}
 
 	@Override
-	public void requestPrice(OnPriceRefreshedListenner listener) {
+	public void requestPrice(OnNewPriceFromSource listener) {
 		// TODO Auto-generated method stub
 		mPlateform.requestPrice(getFrom(), getTo(), new OnPriceResultListenner() {
 
@@ -35,14 +35,14 @@ public abstract class PlatefromSource extends DigtalCashRateSource {
 			public void onPriceResult(boolean succeed, CoinID from, CoinID to, double rate, long timeStamp) {
 				// TODO Auto-generated method stub
 				if (listener != null) {
-					listener.onPriceRefreshed(getName(), succeed, from, to, rate, timeStamp);
+					listener.onNewPrice(PlatefromSource.this, succeed, rate, timeStamp);
 				}
 			}
 		});
 	}
 
 	@Override
-	public int subscribe(long period, final OnPriceRefreshedListenner listener) {
+	public int subscribe(long period, final OnNewPriceFromSource listener) {
 		// TODO Auto-generated method stub
 		ScheduledFuture<?> future = mExcutor.scheduleAtFixedRate(new Runnable() {
 
@@ -55,7 +55,7 @@ public abstract class PlatefromSource extends DigtalCashRateSource {
 					public void onPriceResult(boolean succeed, CoinID from, CoinID to, double rate, long timeStamp) {
 						// TODO Auto-generated method stub
 						if (listener != null) {
-							listener.onPriceRefreshed(getName(), succeed, from, to, rate, timeStamp);
+							listener.onNewPrice(PlatefromSource.this, succeed, rate, timeStamp);
 						}
 					}
 				});
