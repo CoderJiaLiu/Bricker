@@ -1,9 +1,15 @@
 package com.bricker.test;
 
+import com.bricker.framework.BaseComparePolicy;
 import com.bricker.framework.CoinID;
+import com.bricker.framework.Comparator;
 import com.bricker.framework.DigtalCashRateSource;
+import com.bricker.framework.FutureTaskComparetor;
+import com.bricker.framework.OnFindOpportunityListener;
 import com.bricker.framework.OnNewPriceFromSource;
+import com.bricker.framework.PriceInfo;
 import com.bricker.framework.Source;
+import com.bricker.framework.SourceID;
 import com.bricker.util.TimeUtils;
 import com.bricker.util.log.Log;
 import com.bricker.util.log.LogCategory;
@@ -13,7 +19,28 @@ import com.houbi.api.HuobiSource;
 
 public class Tester {
 	public static void main(String[] args) {
-		Log.config(false, LogLevel.v, LogCategory.NET);
+		Log.config(true, LogLevel.v, LogCategory.CAMPARE);
+		testComparator();
+	}
+	
+	private static void testComparator() {
+		Comparator comparator = new FutureTaskComparetor(new BaseComparePolicy(10.0f));
+		comparator.setOnFindOpportunityListener(new OnFindOpportunityListener() {
+			
+			@Override
+			public void OnFindOpportunity(SourceID buy, SourceID sale, PriceInfo buyPrice, PriceInfo salePrice) {
+				// TODO Auto-generated method stub
+				System.out.println("buy = " + buy  + " price = " + buyPrice.getRate() + " sale = " + sale + " price = " + salePrice.getRate() );
+			}
+		});
+		
+		comparator.add(new GateSource(CoinID.BTC, CoinID.USDT));
+		comparator.add(new HuobiSource(CoinID.BTC, CoinID.USDT));
+		comparator.setInterval(5 * 1000);
+		comparator.start();
+	}
+	
+	private static void testSourceSubscrib() {
 		Source source = new HuobiSource(CoinID.BTC, CoinID.USDT);
 		source.subscribe(5000, new OnNewPriceFromSource() {
 

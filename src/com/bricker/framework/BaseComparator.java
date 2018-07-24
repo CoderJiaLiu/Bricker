@@ -2,6 +2,7 @@ package com.bricker.framework;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
 
 import com.bricker.util.log.Log;
 import com.bricker.util.log.LogCategory;
@@ -9,6 +10,8 @@ import com.bricker.util.log.Tag;
 
 public abstract class BaseComparator implements Comparator {
 	private static final Tag TAG = new Tag("BaseComparator", LogCategory.CAMPARE);
+	private static final long DEFAULT_INERVAL = 5000;
+	private long mInterval = DEFAULT_INERVAL;
 	private List<Source> mSources = new ArrayList<>();
 	protected ComparePolicy mPolicy;
 	protected OnCompareResultListener mOnCompareResultListener;
@@ -28,11 +31,11 @@ public abstract class BaseComparator implements Comparator {
 		mOnCompareResultListener = new OnCompareResultListener() {
 
 			@Override
-			public void onCompareResult(boolean findOpportunity, SourceID buy, SourceID sale) {
+			public void onCompareResult(boolean findOpportunity, SourceID buy, SourceID sale, PriceInfo buyPrice, PriceInfo salePrice) {
 				// TODO Auto-generated method stub
 				if (findOpportunity) {
 					if (mOnFindOpportunityListener != null) {
-						mOnFindOpportunityListener.OnFindOpportunity(buy, sale);
+						mOnFindOpportunityListener.OnFindOpportunity(buy, sale, buyPrice, salePrice);
 					}
 				} else {
 					Log.d(TAG, "dont find opportunity");
@@ -105,9 +108,9 @@ public abstract class BaseComparator implements Comparator {
 	}
 
 	@Override
-	public void start(CoinID from, CoinID to) {
+	public void start() {
 		// TODO Auto-generated method stub
-		Log.i(TAG, "start compare from = " + from + " to = " + to);
+		Log.i(TAG, "start compare");
 	}
 
 	@Override
@@ -116,5 +119,11 @@ public abstract class BaseComparator implements Comparator {
 		Log.i(TAG, "stop compare");
 	}
 	
-	
+	public long getInterval() {
+		return mInterval;
+	}
+
+	public void setInterval(long interval) {
+		mInterval = interval;
+	}
 }
