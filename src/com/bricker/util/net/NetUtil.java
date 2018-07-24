@@ -16,7 +16,12 @@ public class NetUtil {
 		if(TextUtils.isEmpty(scheme) || TextUtils.isEmpty(host)) {
 			throw (new IllegalArgumentException());
 		}
-		String url = new StringBuilder().append(scheme).append(host).append(path).append("?").append(params).toString();
+		StringBuilder builder = new StringBuilder().append(scheme).append(host).append(path);
+		if(params != null && !params.isEmpty()) {
+			builder.append("?").append(params);
+		}
+		
+		String url = builder.toString();
 		return url;
 	}
 	
