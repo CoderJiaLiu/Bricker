@@ -1,11 +1,8 @@
 package com.houbi.api;
 
-import java.io.IOException;
 import java.util.List;
 
-
 import com.bricker.framework.CoinID;
-import com.bricker.framework.CoinUtil;
 import com.bricker.framework.OnPriceResultListenner;
 import com.bricker.framework.PlateformApi;
 import com.bricker.framework.PlateformID;
@@ -29,7 +26,7 @@ public class HuobiPlateformApi implements PlateformApi {
 	@Override
 	public void requestPrice(CoinID from, CoinID to, OnPriceResultListenner listener) {
 		// TODO Auto-generated method stub
-			String symbol = new StringBuilder().append(CoinUtil.coinIDtoSymbol(from)).append(CoinUtil.coinIDtoSymbol(to)).toString();
+			String symbol = new StringBuilder().append(from.getName()).append(to.getName()).toString();
 		HuobiClient client = new HuobiClient();
 		MergedResponse<Merged> response = client.getMerged(symbol);
 		if (response == null || !"ok".equals(response.getStatus())) {
