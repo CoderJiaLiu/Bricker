@@ -146,18 +146,21 @@ public class BaseClient {
 	    	}
 	    	try{
 	    		Response response = chain.proceed(request);
-	        	while (!response.isSuccessful() && mRetryTimes < mMaxRetryTime) {
-	        		response.close();
-		            mRetryTimes++;
-		            response = chain.proceed(request);
-		        }
-	        	mRetryTimes = 0;
-	        	if(mRetryTimes >= mMaxRetryTime)
-	        	Log.e(TAG,"net error");
+	    		if(mRetryTimes >= mMaxRetryTime) {
+	        		mRetryTimes = 0;
+	        		Log.e(TAG,"net error");
+	        	}
+	    		if(!response.isSuccessful()){
+	    			mRetryTimes ++;
+	    			retry(chain);
+	    		} else {
+	    			mRetryTimes = 0;
+	    		}
 		        return response;
 	    	}catch (Exception e) {
 				// TODO: handle exception
 	    		mRetryTimes++;
+	    		Log.w(TAG, "exception = " + e.getMessage());
 	    		if(mRetryTimes < mMaxRetryTime) {
 	    			return retry(chain);
 	    		}
