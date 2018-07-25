@@ -4,15 +4,14 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.bricker.util.log.LogCategory;
 import com.bricker.util.log.Log;
+import com.bricker.util.log.LogCategory;
 import com.bricker.util.log.Tag;
 import com.bricker.util.net.NetUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import okhttp3.Call;
 import okhttp3.Interceptor;
-import okhttp3.Interceptor.Chain;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.OkHttpClient.Builder;
@@ -88,7 +87,6 @@ public class BaseClient {
 			Log.d(TAG, "call request = " + request);
 			
 			Response response;
-			Call call = sClient.newCall(request);
 			response = sClient.newCall(request).execute();
 			String s = response.body().string();
 			Log.d(TAG, "call response = " + s);
