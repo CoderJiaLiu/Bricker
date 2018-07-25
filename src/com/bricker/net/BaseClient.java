@@ -152,7 +152,7 @@ public class BaseClient {
 	        	}
 	    		if(!response.isSuccessful()){
 	    			mRetryTimes ++;
-	    			retry(chain);
+	    			response = retry(chain);
 	    		} else {
 	    			mRetryTimes = 0;
 	    		}
