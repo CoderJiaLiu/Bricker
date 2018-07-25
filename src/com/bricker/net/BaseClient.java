@@ -10,7 +10,6 @@ import com.bricker.util.log.Tag;
 import com.bricker.util.net.NetUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import okhttp3.Call;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -22,13 +21,13 @@ import okhttp3.Response;
 public class BaseClient {
 	private static final Tag TAG = new Tag("BaseClient", LogCategory.NET);
 	private static OkHttpClient sClient;
-	private static final int DEFAULT_CONN_TIMEOUT = 200;
-	private static final int DEFAULT_READ_TIMEOUT = 200;
-	private static final int DEFAULT_WRITE_TIMEOUT = 200;
+	private static final int DEFAULT_CONN_TIMEOUT = 500;
+	private static final int DEFAULT_READ_TIMEOUT = 500;
+	private static final int DEFAULT_WRITE_TIMEOUT = 500;
 	private static final MediaType JSON = MediaType.parse("application/json");
 
 	public BaseClient() {
-		Log.i(TAG, "BaseClient created");
+		Log.d(TAG, "BaseClient created");
 		if (sClient == null) {
 			sClient = createOkHttpClient(DEFAULT_CONN_TIMEOUT, DEFAULT_READ_TIMEOUT, DEFAULT_WRITE_TIMEOUT);
 		}

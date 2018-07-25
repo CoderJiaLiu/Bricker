@@ -19,7 +19,7 @@ import com.houbi.api.HuobiSource;
 
 public class Tester {
 	public static void main(String[] args) {
-		Log.config(true, LogLevel.w, LogCategory.CAMPARE, LogCategory.NET);
+		Log.config(true, LogLevel.i, LogCategory.CAMPARE, LogCategory.NET);
 		testComparator();
 //		testSourceSubscrib();
 	}

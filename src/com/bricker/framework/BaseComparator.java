@@ -38,7 +38,7 @@ public abstract class BaseComparator implements Comparator {
 						mOnFindOpportunityListener.OnFindOpportunity(buy, sale, buyPrice, salePrice);
 					}
 				} else {
-					Log.d(TAG, "dont find opportunity");
+					Log.i(TAG, "dont find opportunity");
 				}
 			}
 		};
