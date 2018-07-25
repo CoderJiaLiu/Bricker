@@ -10,6 +10,9 @@ import com.bricker.util.log.Tag;
 import com.bricker.util.net.NetUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import okhttp3.Call;
+import okhttp3.Interceptor;
+import okhttp3.Interceptor.Chain;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.OkHttpClient.Builder;
@@ -20,9 +23,9 @@ import okhttp3.Response;
 public class BaseClient {
 	private static final Tag TAG = new Tag("BaseClient", LogCategory.NET);
 	private static OkHttpClient sClient;
-	private static final int DEFAULT_CONN_TIMEOUT = 5000;
-	private static final int DEFAULT_READ_TIMEOUT = 5000;
-	private static final int DEFAULT_WRITE_TIMEOUT = 5000;
+	private static final int DEFAULT_CONN_TIMEOUT = 200;
+	private static final int DEFAULT_READ_TIMEOUT = 200;
+	private static final int DEFAULT_WRITE_TIMEOUT = 200;
 	private static final MediaType JSON = MediaType.parse("application/json");
 
 	public BaseClient() {
@@ -37,6 +40,7 @@ public class BaseClient {
 				+ " writeTimeOut = " + writeTimeOut);
 		return new Builder().connectTimeout(connectTimeOut, TimeUnit.MILLISECONDS)
 				.readTimeout(readTimeOut, TimeUnit.MILLISECONDS).writeTimeout(writeTimeOut, TimeUnit.MILLISECONDS)
+				.addInterceptor(new RetryIntercepter(3))
 				.build();
 	}
 
@@ -84,6 +88,7 @@ public class BaseClient {
 			Log.d(TAG, "call request = " + request);
 			
 			Response response;
+			Call call = sClient.newCall(request);
 			response = sClient.newCall(request).execute();
 			String s = response.body().string();
 			Log.d(TAG, "call response = " + s);
@@ -120,5 +125,49 @@ public class BaseClient {
 	public <T> T post(String scheme, String host, String path,
 			Map<String, String> params, Object content, Encoder encoder, TypeReference<T> ref, boolean needSignatur, Signer signer) {
 		return call(scheme, HttpMethod.GET, host, path, content, params, encoder, ref, needSignatur, signer);
+	}
+	
+	public class RetryIntercepter implements Interceptor {
+
+	    public int mMaxRetryTime;
+	    private int mRetryTimes = 0;
+
+	    public RetryIntercepter(int maxRetry) {
+	        this.mMaxRetryTime = maxRetry + 1;
+	    }
+
+	    @Override
+	    public Response intercept(Chain chain) {
+	    	return retry(chain);
+	    }
+	    
+	    private Response retry(Chain chain) {
+	    	Request request = chain.request();
+	    	if(mRetryTimes > 0 ) {
+	    		Log.w(TAG, "retry request = " + request + " retryNum = " + mRetryTimes);
+	    	}
+	    	try{
+	    		Response response = chain.proceed(request);
+	        	while (!response.isSuccessful() && mRetryTimes < mMaxRetryTime) {
+	        		response.close();
+		            mRetryTimes++;
+		            response = chain.proceed(request);
+		        }
+	        	mRetryTimes = 0;
+	        	if(mRetryTimes >= mMaxRetryTime)
+	        	Log.e(TAG,"net error");
+		        return response;
+	    	}catch (Exception e) {
+				// TODO: handle exception
+	    		mRetryTimes++;
+	    		if(mRetryTimes < mMaxRetryTime) {
+	    			return retry(chain);
+	    		}
+	    		Log.e(TAG, e.getMessage());
+	    		mRetryTimes = 0;
+	    		e.printStackTrace();
+	    		return null;
+			}
+	    }
 	}
 }
